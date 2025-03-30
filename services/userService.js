@@ -53,14 +53,38 @@ export const getAllUsers = async () => {
 // Update user
 export const updateUser = async (id, updateData) => {
   try {
+    console.log("🔍 Updating user with ID:", id);
+    console.log("📤 Update data:", updateData);
+
+    // ✅ Fix: Ensure updateData is a plain object
+    if (!updateData || typeof updateData !== "object" || Array.isArray(updateData)) {
+      console.error("❌ Invalid updateData:", updateData);
+      throw new Error("Invalid update data - Must be an object");
+    }
+
     const userRef = db.collection("Users").doc(id);
-    await userRef.update(updateData);
+    const userDoc = await userRef.get();
+
+    if (!userDoc.exists) {
+      console.error("❌ User not found:", id);
+      throw new Error("User not found");
+    }
+
+    // ✅ Ensure we spread updateData correctly
+    await userRef.update({ ...updateData });
+
+    console.log("✅ User updated successfully:", { id, ...updateData });
+
     return { id, ...updateData };
   } catch (error) {
     console.error("❌ Error updating user:", error);
     throw new Error("Failed to update user");
   }
 };
+
+
+
+
 
 // Delete user
 // Delete a user by ID

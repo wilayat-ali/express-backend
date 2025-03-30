@@ -1,12 +1,12 @@
-import { deleteUser } from "../../services/userService.js";
+import { deleteUser } from "../../../services/userService.js";
 
-const deleteUserHandler = async (req, res) => {
+export default async function handler(req, res) {
   if (req.method !== "DELETE") {
     return res.status(405).json({ success: false, message: "Method Not Allowed" });
   }
 
   try {
-    const { userId } = req.query; // Extract userId from query params
+    const { userId } = req.query; // Extract userId from dynamic route
 
     if (!userId) {
       return res.status(400).json({ success: false, message: "User ID is required" });
@@ -18,6 +18,4 @@ const deleteUserHandler = async (req, res) => {
   } catch (error) {
     return res.status(500).json({ success: false, message: error.message });
   }
-};
-
-export default deleteUserHandler;
+}
